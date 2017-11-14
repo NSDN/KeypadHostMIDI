@@ -76,7 +76,7 @@ namespace KeypadHostMIDI
             string note = msg.Pitch.ToString();
 
             if (port.IsOpen && mappingData.ContainsKey(note))
-                port.Write(new char[] { mappingData[note] }, 0, 1);
+                port.Write(new byte[] { (byte) mappingData[note] }, 0, 1);
 
             boxNote.Invoke(new MethodInvoker(() => {
                 if (boxNote.Focused)
@@ -92,7 +92,7 @@ namespace KeypadHostMIDI
             string note = msg.Pitch.ToString();
 
             if (port.IsOpen && mappingData.ContainsKey(note))
-                port.Write(new byte[] { (byte) (mappingData[note] & 0x80) }, 0, 1);
+                port.Write(new byte[] { (byte) (mappingData[note] | 0x80) }, 0, 1);
         }
 
         public void doConnect()
