@@ -67,7 +67,7 @@ namespace KeypadHostMIDI
             if (boxKey.Focused)
             {
                 boxKey.Clear();
-                boxKey.AppendText(e.KeyCode.ToString());
+                boxKey.AppendText(Char.ConvertFromUtf32(e.KeyValue & 0x7F));
             }
         }
 
@@ -93,6 +93,22 @@ namespace KeypadHostMIDI
 
             if (port.IsOpen && mappingData.ContainsKey(note))
                 port.Write(new byte[] { (byte) (mappingData[note] | 0x80) }, 0, 1);
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            string note = boxNote.Text;
+            string key = boxKey.Text;
+
+            if (note.Length == 0 || key.Length == 0) return;
+
+            if (mappingData.ContainsKey(note))
+                mappingData.Remove(note);
+
+            mappingData.Add(note, key.ToCharArray()[0]);
+
+            boxNote.Clear();
+            boxKey.Clear();
         }
 
         public void doConnect()
@@ -153,21 +169,5 @@ namespace KeypadHostMIDI
                 boxSerial.Items.Add(i);
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            string note = boxNote.Text;
-            string key = boxKey.Text;
-
-            if (note.Length == 0 || key.Length == 0) return;
-
-            if (mappingData.ContainsKey(note))
-                mappingData.Remove(note);
-
-            mappingData.Add(note, key.ToCharArray()[0]);
-
-            boxNote.Clear();
-            boxKey.Clear();
-        }
-        
     }
 }

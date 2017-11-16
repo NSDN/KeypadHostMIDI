@@ -152,7 +152,7 @@
             // labelTo
             // 
             this.labelTo.AutoSize = true;
-            this.labelTo.Location = new System.Drawing.Point(44, 25);
+            this.labelTo.Location = new System.Drawing.Point(60, 25);
             this.labelTo.Name = "labelTo";
             this.labelTo.Size = new System.Drawing.Size(17, 12);
             this.labelTo.TabIndex = 12;
@@ -161,10 +161,10 @@
             // 
             // boxKey
             // 
-            this.boxKey.Location = new System.Drawing.Point(67, 21);
+            this.boxKey.Location = new System.Drawing.Point(79, 21);
             this.boxKey.Name = "boxKey";
             this.boxKey.ReadOnly = true;
-            this.boxKey.Size = new System.Drawing.Size(32, 21);
+            this.boxKey.Size = new System.Drawing.Size(48, 21);
             this.boxKey.TabIndex = 11;
             this.boxKey.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.boxKey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.boxKey_KeyDown);
@@ -174,7 +174,7 @@
             this.boxNote.Location = new System.Drawing.Point(6, 21);
             this.boxNote.Name = "boxNote";
             this.boxNote.ReadOnly = true;
-            this.boxNote.Size = new System.Drawing.Size(32, 21);
+            this.boxNote.Size = new System.Drawing.Size(48, 21);
             this.boxNote.TabIndex = 10;
             this.boxNote.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
