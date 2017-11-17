@@ -11,15 +11,17 @@ namespace KeypadHostMIDI
 {
     public partial class MainForm : Form
     {
-        SerializableDictionary<string, char> mappingData;
+        SerializableDictionary<string, byte> mappingData;
         InputDevice inputDevice;
+        Stack<byte> tmpKey;
 
         public MainForm()
         {
             InitializeComponent();
 
-            mappingData = new SerializableDictionary<string, char>();
+            mappingData = new SerializableDictionary<string, byte>();
             inputDevice = null;
+            tmpKey = new Stack<byte>();
         }
 
         private const string _path = "config.xml";
@@ -35,13 +37,13 @@ namespace KeypadHostMIDI
             {
                 FileStream stream = new FileStream(_path, FileMode.Open);
                 XmlSerializer serializer = new XmlSerializer(mappingData.GetType());
-                mappingData = (SerializableDictionary<string, char>)serializer.Deserialize(stream);
+                mappingData = (SerializableDictionary<string, byte>)serializer.Deserialize(stream);
                 stream.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                mappingData = new SerializableDictionary<string, char>();
+                mappingData = new SerializableDictionary<string, byte>();
             }
         }
 
@@ -66,8 +68,21 @@ namespace KeypadHostMIDI
         {
             if (boxKey.Focused)
             {
+                Keys key = e.KeyCode;
+                
+                switch (key)
+                {
+                    case Keys.Space:    tmpKey.Push(0x20); break;
+                    case Keys.Up:       tmpKey.Push(0xDA); break;
+                    case Keys.Down:     tmpKey.Push(0xD9); break;
+                    case Keys.Left:     tmpKey.Push(0xD8); break;
+                    case Keys.Right:    tmpKey.Push(0xD7); break;
+                    case Keys.Escape:   tmpKey.Push(0xB1); break;
+                    default: tmpKey.Push((byte) ((byte) key & 0x7F)); break;
+                }
+
                 boxKey.Clear();
-                boxKey.AppendText(Char.ConvertFromUtf32(e.KeyValue & 0x7F));
+                boxKey.AppendText(key.ToString());
             }
         }
 
@@ -75,8 +90,15 @@ namespace KeypadHostMIDI
         {
             string note = msg.Pitch.ToString();
 
-            if (port.IsOpen && mappingData.ContainsKey(note))
-                port.Write(new byte[] { (byte) mappingData[note] }, 0, 1);
+            try
+            {
+                if (port.IsOpen && mappingData.ContainsKey(note))
+                    port.Write(new byte[] { 0xFF, mappingData[note] }, 0, 2);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Serial error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             boxNote.Invoke(new MethodInvoker(() => {
                 if (boxNote.Focused)
@@ -91,24 +113,31 @@ namespace KeypadHostMIDI
         {
             string note = msg.Pitch.ToString();
 
-            if (port.IsOpen && mappingData.ContainsKey(note))
-                port.Write(new byte[] { (byte) (mappingData[note] | 0x80) }, 0, 1);
+            try
+            {
+                if (port.IsOpen && mappingData.ContainsKey(note))
+                    port.Write(new byte[] { 0x00, mappingData[note] }, 0, 2);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Serial error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             string note = boxNote.Text;
-            string key = boxKey.Text;
 
-            if (note.Length == 0 || key.Length == 0) return;
+            if (note.Length == 0 || tmpKey.Count == 0) return;
 
             if (mappingData.ContainsKey(note))
                 mappingData.Remove(note);
 
-            mappingData.Add(note, key.ToCharArray()[0]);
+            mappingData.Add(note, tmpKey.Pop());
 
             boxNote.Clear();
             boxKey.Clear();
+            tmpKey.Clear();
         }
 
         public void doConnect()
