@@ -45,6 +45,7 @@
             this.boxNote = new System.Windows.Forms.TextBox();
             this.showState = new System.Windows.Forms.RadioButton();
             this.btnConnect = new System.Windows.Forms.Button();
+            this.modeBox = new System.Windows.Forms.CheckBox();
             this.groupMidi.SuspendLayout();
             this.groupSerial.SuspendLayout();
             this.groupMain.SuspendLayout();
@@ -82,6 +83,7 @@
             // 
             // groupSerial
             // 
+            this.groupSerial.Controls.Add(this.modeBox);
             this.groupSerial.Controls.Add(this.btnSerial);
             this.groupSerial.Controls.Add(this.boxSerial);
             this.groupSerial.Location = new System.Drawing.Point(12, 68);
@@ -95,7 +97,7 @@
             // 
             this.btnSerial.Location = new System.Drawing.Point(133, 17);
             this.btnSerial.Name = "btnSerial";
-            this.btnSerial.Size = new System.Drawing.Size(80, 24);
+            this.btnSerial.Size = new System.Drawing.Size(59, 24);
             this.btnSerial.TabIndex = 10;
             this.btnSerial.Text = "Refresh";
             this.btnSerial.UseVisualStyleBackColor = true;
@@ -201,6 +203,18 @@
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
+            // modeBox
+            // 
+            this.modeBox.AutoSize = true;
+            this.modeBox.Checked = true;
+            this.modeBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.modeBox.Location = new System.Drawing.Point(198, 22);
+            this.modeBox.Name = "modeBox";
+            this.modeBox.Size = new System.Drawing.Size(15, 14);
+            this.modeBox.TabIndex = 12;
+            this.modeBox.UseVisualStyleBackColor = true;
+            this.modeBox.CheckedChanged += new System.EventHandler(this.modeBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -219,6 +233,7 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupMidi.ResumeLayout(false);
             this.groupSerial.ResumeLayout(false);
+            this.groupSerial.PerformLayout();
             this.groupMain.ResumeLayout(false);
             this.groupMain.PerformLayout();
             this.ResumeLayout(false);
@@ -242,6 +257,7 @@
         private System.Windows.Forms.TextBox boxNote;
         private System.Windows.Forms.RadioButton showState;
         private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.CheckBox modeBox;
     }
 }
 
